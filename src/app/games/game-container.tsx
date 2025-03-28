@@ -1,8 +1,6 @@
 "use client";
 
 import { getGame } from "@/lib/api/game-api";
-import { firebaseApp } from "@/lib/firebase.config";
-import { getAnalytics, logEvent } from "firebase/analytics";
 import { useLayoutEffect, useRef, useState } from "react";
 
 export default function GameContainer({ gameId }: { gameId: string }) {
@@ -28,8 +26,7 @@ export default function GameContainer({ gameId }: { gameId: string }) {
         const game = await getGame(gameId);
 
         if (!game) {
-          setError("Game not found");
-          return;
+          throw Error("Game not found");
         }
 
         document.title = game.name;
@@ -53,10 +50,11 @@ export default function GameContainer({ gameId }: { gameId: string }) {
           containerRef.current.appendChild(script);
         }
 
-        const analytics = getAnalytics(firebaseApp);
-        logEvent(analytics, game.id);
+        // const analytics = getAnalytics(firebaseApp);
+        // logEvent(analytics, game.id);
       } catch (error) {
         console.error(error);
+        containerRef.current.innerHTML = "";
         setError("Unable to load game");
       } finally {
         setLoading(false);
@@ -74,14 +72,6 @@ export default function GameContainer({ gameId }: { gameId: string }) {
       w.destroy = null;
     };
   }, [gameId]);
-
-  if (error) {
-    return (
-      <div className="container py-5">
-        <span className="text-destructive text-sm">{error}</span>
-      </div>
-    );
-  }
 
   return (
     <>
