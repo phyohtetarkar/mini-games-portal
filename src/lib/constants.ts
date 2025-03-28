@@ -1,0 +1,7 @@
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? ""
+
+export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_DESCRIPTION ?? ""
+
+export const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? ""
+
+export const FIREBASE_RECAPTCHA_ENTERPRISE_KEY = process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_ENTERPRISE_KEY ?? ""
