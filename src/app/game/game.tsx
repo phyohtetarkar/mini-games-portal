@@ -1,9 +1,13 @@
 "use client";
 
 import { getGame } from "@/lib/api/game-api";
+import { firebaseApp } from "@/lib/firebase.config";
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { useLayoutEffect, useRef, useState } from "react";
+import { useParams } from "react-router";
 
-export default function GameContainer({ gameId }: { gameId: string }) {
+export default function Game() {
+  const params = useParams();
   const initRef = useRef(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string>();
@@ -23,7 +27,7 @@ export default function GameContainer({ gameId }: { gameId: string }) {
 
       try {
         setLoading(true);
-        const game = await getGame(gameId);
+        const game = await getGame(params.game ?? "none");
 
         if (!game) {
           throw Error("Game not found");
@@ -50,8 +54,8 @@ export default function GameContainer({ gameId }: { gameId: string }) {
           containerRef.current.appendChild(script);
         }
 
-        // const analytics = getAnalytics(firebaseApp);
-        // logEvent(analytics, game.id);
+        const analytics = getAnalytics(firebaseApp);
+        logEvent(analytics, game.id);
       } catch (error) {
         console.error(error);
         containerRef.current.innerHTML = "";
@@ -71,13 +75,18 @@ export default function GameContainer({ gameId }: { gameId: string }) {
 
       w.destroy = null;
     };
-  }, [gameId]);
+  }, [params]);
 
   return (
-    <>
+    <div className="h-full">
       {isLoading && (
         <div className="flex items-center justify-center p-5">
           Loading game...
+        </div>
+      )}
+      {error && (
+        <div className="container py-5">
+          <span className="text-destructive">{error}</span>
         </div>
       )}
       <div
@@ -85,6 +94,6 @@ export default function GameContainer({ gameId }: { gameId: string }) {
         id="game-container"
         className="relative w-full h-full bg-background"
       ></div>
-    </>
+    </div>
   );
 }
