@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
-export default function AppFooter({ className }: { className?: string }) {
+export default function Footer({ className }: { className?: string }) {
   return (
     <footer className="text-muted-foreground border-t bg-zinc-900">
       <div
@@ -12,13 +11,13 @@ export default function AppFooter({ className }: { className?: string }) {
       >
         <span className="text-sm text-center grow">
           <span>Made with &#9829; by</span>
-          <Link
+          <a
             href={`https://github.com/phyohtetarkar`}
             target="_blank"
             className="ms-1 font-semibold text-foreground hover:opacity-70"
           >
             Phyo Htet Arkar
-          </Link>
+          </a>
         </span>
       </div>
     </footer>

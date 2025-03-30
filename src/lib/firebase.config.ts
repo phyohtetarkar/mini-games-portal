@@ -7,8 +7,8 @@ const firebaseConfig = {
   authDomain: "mini-games-portal.firebaseapp.com",
   projectId: "mini-games-portal",
   storageBucket: "mini-games-portal.firebasestorage.app",
-  appId: "1:978743231737:web:c2b26ab8c6261388b7ce28",
-  measurementId: "G-2ML4FTBL0M"
+  appId: "1:978743231737:web:04609dfc4dfaebecb7ce28",
+  measurementId: "G-D36944SBPF"
 };
 
 // Initialize Firebase
