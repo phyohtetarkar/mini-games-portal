@@ -1,17 +1,25 @@
-"use client";
-
 import { getGame } from "@/lib/api/game-api";
 import { firebaseApp } from "@/lib/firebase.config";
 import { getAnalytics, logEvent } from "firebase/analytics";
-import { useLayoutEffect, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useLayoutEffect, useRef } from "react";
+import { LoaderFunctionArgs, useLoaderData } from "react-router";
+
+export const loadGame = async ({ params }: LoaderFunctionArgs) => {
+  try {
+    const id = params.game;
+    return await getGame(id ?? "none");
+  } catch (error) {
+    console.error(error);
+  }
+
+  return null;
+}
 
 export default function Game() {
-  const params = useParams();
   const initRef = useRef(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [error, setError] = useState<string>();
-  const [isLoading, setLoading] = useState(false);
+
+  const game = useLoaderData<typeof loadGame>();
 
   useLayoutEffect(() => {
     if (initRef.current) {
@@ -25,14 +33,11 @@ export default function Game() {
         return;
       }
 
+      if (!game) {
+        return;
+      }
+
       try {
-        setLoading(true);
-        const game = await getGame(params.game ?? "none");
-
-        if (!game) {
-          throw Error("Game not found");
-        }
-
         document.title = game.name;
 
         containerRef.current.innerHTML = "";
@@ -59,9 +64,6 @@ export default function Game() {
       } catch (error) {
         console.error(error);
         containerRef.current.innerHTML = "";
-        setError("Unable to load game");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -75,18 +77,13 @@ export default function Game() {
 
       w.destroy = null;
     };
-  }, [params]);
+  }, [game]);
 
   return (
     <div className="h-full">
-      {isLoading && (
-        <div className="flex items-center justify-center p-5">
-          Loading game...
-        </div>
-      )}
-      {error && (
+      {!game && (
         <div className="container py-5">
-          <span className="text-destructive">{error}</span>
+          <span className="text-muted-foreground">Game not found</span>
         </div>
       )}
       <div
